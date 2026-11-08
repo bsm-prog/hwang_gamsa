@@ -12,7 +12,7 @@
   --text:#1A1A1A; --text-secondary:#5C5C5C; --text-muted:#8A8A8A;
   --accent:#0F766E; --accent-light:#E6F4F2;
   --border:#E5E4E0; --border-light:#EDEDEB;
-  --final:#16A34A; --final2:#EA580C; --core:#DC2626;
+  --final:#16A34A; --final2:#EA580C; --core:#DC2626; --core-bg:#FEF2F2; --alt:#2563EB; --alt-bg:#EFF6FF;
   --shadow-sm:0 1px 2px rgba(0,0,0,.04); --shadow-md:0 2px 8px rgba(0,0,0,.06);
   --radius:8px;
 }
@@ -20,7 +20,7 @@
   :root:not([data-theme="light"]) {
     --bg:#111111; --surface:#1A1A1A; --surface-alt:#222222;
     --text:#E8E8E6; --text-secondary:#A8A8A6; --text-muted:#6E6E6C;
-    --accent:#5EEAD4; --accent-light:#123330;
+    --accent:#5EEAD4; --accent-light:#123330; --core-bg:#2A1515; --alt:#60A5FA; --alt-bg:#13203A;
     --border:#2E2E2E; --border-light:#262626;
     --shadow-sm:0 1px 2px rgba(0,0,0,.2); --shadow-md:0 2px 8px rgba(0,0,0,.3);
   }
@@ -28,7 +28,7 @@
 :root[data-theme="dark"] {
   --bg:#111111; --surface:#1A1A1A; --surface-alt:#222222;
   --text:#E8E8E6; --text-secondary:#A8A8A6; --text-muted:#6E6E6C;
-  --accent:#5EEAD4; --accent-light:#123330;
+  --accent:#5EEAD4; --accent-light:#123330; --core-bg:#2A1515; --alt:#60A5FA; --alt-bg:#13203A;
   --border:#2E2E2E; --border-light:#262626;
   --shadow-sm:0 1px 2px rgba(0,0,0,.2); --shadow-md:0 2px 8px rgba(0,0,0,.3);
 }
@@ -73,7 +73,9 @@ h1{font-family:'Noto Sans KR',system-ui,sans-serif;text-wrap:balance;line-height
 .type-final{background:var(--final);color:#fff}
 .type-final2{background:var(--final2);color:#fff}
 .type-core{background:var(--core);color:#fff}
-.type-alt{background:var(--surface-alt);color:var(--text-secondary);border:1px solid var(--border)}
+.type-alt{background:var(--alt);color:#fff}
+.qa-item.item-core{border-left:4px solid var(--core);background:var(--core-bg)}
+.qa-item.item-alt{border-left:4px solid var(--alt)}
 .qa-content{flex:1;min-width:0}
 .qa-title{font-size:.9rem;font-weight:600;line-height:1.4;margin-bottom:4px}
 .qa-meta{font-size:.72rem;color:var(--text-muted)}
@@ -117,8 +119,8 @@ h1{font-family:'Noto Sans KR',system-ui,sans-serif;text-wrap:balance;line-height
 <main>
   <div class="qa-stats">
     <div class="qa-stat">전체 질의서 <strong class="qa-num" id="qa-total">0</strong></div>
-    <div class="qa-stat"><span class="dot" style="background:var(--final)"></span>최종발언 <strong class="qa-num" id="qa-final">0</strong></div>
-    <div class="qa-stat"><span class="dot" style="background:var(--text-muted)"></span>기타 <strong class="qa-num" id="qa-other">0</strong></div>
+    <div class="qa-stat"><span class="dot" style="background:var(--core)"></span>핵심 <strong class="qa-num" id="qa-final">0</strong></div>
+    <div class="qa-stat"><span class="dot" style="background:var(--alt)"></span>대체 <strong class="qa-num" id="qa-other">0</strong></div>
   </div>
 
   <div class="qa-day-filters" id="qa-filters"></div>
@@ -153,8 +155,8 @@ h1{font-family:'Noto Sans KR',system-ui,sans-serif;text-wrap:balance;line-height
   function typeInfo(t) {
     if (t === '최종발언') return { tag: 'type-final', item: ' item-final' };
     if (t === '최종발언 v2') return { tag: 'type-final2', item: ' item-final2' };
-    if (t === '핵심') return { tag: 'type-core', item: '' };
-    return { tag: 'type-alt', item: '' };
+    if (t === '핵심') return { tag: 'type-core', item: ' item-core' };
+    return { tag: 'type-alt', item: ' item-alt' };
   }
   function fmtDate(iso) {
     if (!iso) return '';
@@ -262,7 +264,7 @@ h1{font-family:'Noto Sans KR',system-ui,sans-serif;text-wrap:balance;line-height
     .then(function (d) {
       data = d;
       var qs = d.queries || [];
-      var fin = qs.filter(function (q) { return q.type === '최종발언' || q.type === '최종발언 v2'; }).length;
+      var fin = qs.filter(function (q) { return q.type === '핵심'; }).length;
       document.getElementById('qa-total').textContent = qs.length;
       document.getElementById('qa-final').textContent = fin;
       document.getElementById('qa-other').textContent = qs.length - fin;
